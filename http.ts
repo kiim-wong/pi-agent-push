@@ -1,5 +1,5 @@
 /**
- * pi-push — HTTP transport.
+ * pi-agent-push — HTTP transport.
  *
  * Every request carries its own `AbortSignal.timeout`. It must never use the
  * agent's `ctx.signal`: on the "interrupted" path that signal is already

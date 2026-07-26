@@ -1,5 +1,5 @@
 /**
- * pi-push — shared types.
+ * pi-agent-push — shared types.
  *
  * Kept free of runtime imports so the module can be loaded by jiti (pi) and by
  * plain `node` type-stripping (tests) without any dependency resolution.

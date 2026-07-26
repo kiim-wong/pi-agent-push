@@ -1,5 +1,5 @@
 /**
- * pi-push — configuration loading.
+ * pi-agent-push — configuration loading.
  *
  * The config is re-read whenever `config.json` changes on disk (mtime + size
  * check), so editing it takes effect on the next notification without
@@ -16,19 +16,21 @@ function resolveExtensionDir(): string {
 	try {
 		return dirname(fileURLToPath(import.meta.url));
 	} catch {
-		return join(homedir(), ".pi", "agent", "extensions", "pi-push");
+		return join(homedir(), ".pi", "agent", "extensions", "pi-agent-push");
 	}
 }
 
 export const EXTENSION_DIR = resolveExtensionDir();
 
 export function configPath(): string {
-	const override = process.env.PI_PUSH_CONFIG?.trim();
+	const override =
+		process.env.PI_AGENT_PUSH_CONFIG?.trim() ||
+		process.env.PI_PUSH_CONFIG?.trim(); // backward-compatible alias
 	return override ? override : join(EXTENSION_DIR, "config.json");
 }
 
 export function logPath(): string {
-	// Next to the config file, so PI_PUSH_CONFIG keeps everything together.
+	// Next to the config file, so PI_AGENT_PUSH_CONFIG keeps everything together.
 	return join(dirname(configPath()), "push.log");
 }
 

@@ -1,5 +1,5 @@
 /**
- * pi-push — `/push` subcommand parsing and config mutations.
+ * pi-agent-push — `/push` subcommand parsing and config mutations.
  */
 
 import {
@@ -146,7 +146,7 @@ function statusText(
 	describeResults?: (r: ChannelResult[]) => string,
 ): string {
 	const lines = [
-		`pi-push: ${runtimeEnabled && config.enabled ? "已启用" : "已停用"}${config.exists ? "" : "（无配置文件）"}`,
+		`pi-agent-push: ${runtimeEnabled && config.enabled ? "已启用" : "已停用"}${config.exists ? "" : "（无配置文件）"}`,
 		`配置: ${config.path}`,
 		`渠道: ${
 			config.channels.length === 0
@@ -205,7 +205,7 @@ export function handlePushCommand(
 		options.setRuntimeEnabled(action === "on");
 		return {
 			ok: true,
-			message: `pi-push 已${action === "on" ? "开启" : "关闭"}（仅当前会话，不写 config.json）`,
+			message: `pi-agent-push 已${action === "on" ? "开启" : "关闭"}（仅当前会话，不写 config.json）`,
 		};
 	}
 

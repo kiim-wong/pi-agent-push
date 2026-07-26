@@ -1,5 +1,5 @@
 /**
- * pi-push — push pi's state changes to your phone / group chat.
+ * pi-agent-push — push pi's state changes to your phone / group chat.
  *
  * Event wiring (see DESIGN.md for the reasoning):
  *
@@ -165,7 +165,7 @@ export default function piNotify(pi: ExtensionAPI) {
 
 	pi.registerCommand("push", {
 		description:
-			"pi-push: status|list|get|set|enable|disable|test|events|on|off|help",
+			"pi-agent-push: status|list|get|set|enable|disable|test|events|on|off|help",
 		handler: async (args, ctx) => {
 			let result;
 			try {
@@ -208,14 +208,14 @@ export default function piNotify(pi: ExtensionAPI) {
 						event: "test",
 						status: "测试",
 						reason: result.testFilter
-							? `pi-push 测试 (${result.testFilter})`
-							: "pi-push 通道测试",
+							? `pi-agent-push 测试 (${result.testFilter})`
+							: "pi-agent-push 通道测试",
 						durationMs: 0,
 						...baseInput(ctx),
 					},
 				);
 				const ok = results.length > 0 && results.every((r) => r.ok);
-				ctx.ui.notify(`pi-push 测试：${describeResults(results)}`, ok ? "info" : "error");
+				ctx.ui.notify(`pi-agent-push 测试：${describeResults(results)}`, ok ? "info" : "error");
 				return;
 			}
 

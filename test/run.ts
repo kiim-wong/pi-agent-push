@@ -1,5 +1,5 @@
 /**
- * pi-push — self test.
+ * pi-agent-push — self test.
  *
  *   node test/run.ts        (Node >= 23, TypeScript is stripped natively)
  *
@@ -13,9 +13,9 @@ import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-const workDir = mkdtempSync(join(tmpdir(), "pi-push-test-"));
+const workDir = mkdtempSync(join(tmpdir(), "pi-agent-push-test-"));
 const configFile = join(workDir, "config.json");
-process.env.PI_PUSH_CONFIG = configFile;
+process.env.PI_AGENT_PUSH_CONFIG = configFile;
 
 const { invalidateConfigCache } = await import("../config.ts");
 const { dingtalkSign, feishuSign } = await import("../channels/groupbot.ts");
@@ -496,16 +496,16 @@ check("错误摘要: 空值安全", summarizeError(undefined, 40) === "");
 // 14. 环境变量引用（key 不落盘）
 {
 	reset();
-	process.env.PI_PUSH_TEST_TOKEN = "s3cr3t";
+	process.env.PI_AGENT_PUSH_TEST_TOKEN = "s3cr3t";
 	writeConfig({
 		channels: [
 			{
 				type: "webhook",
 				url: `${base}/hook`,
 				headers: {
-					"X-Whole": "$PI_PUSH_TEST_TOKEN",
-					"X-Embedded": "Bearer ${PI_PUSH_TEST_TOKEN}",
-					"X-Missing": "$PI_PUSH_NOT_SET",
+					"X-Whole": "$PI_AGENT_PUSH_TEST_TOKEN",
+					"X-Embedded": "Bearer ${PI_AGENT_PUSH_TEST_TOKEN}",
+					"X-Missing": "$PI_AGENT_PUSH_NOT_SET",
 				},
 			},
 		],
@@ -611,6 +611,6 @@ check("错误摘要: 空值安全", summarizeError(undefined, 40) === "");
 
 server.close();
 
-console.log(`\npi-push self test: ${passed} passed, ${failures.length} failed`);
+console.log(`\npi-agent-push self test: ${passed} passed, ${failures.length} failed`);
 for (const failure of failures) console.log(`  ✗ ${failure}`);
 process.exit(failures.length === 0 ? 0 : 1);

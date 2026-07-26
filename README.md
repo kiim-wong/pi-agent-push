@@ -1,26 +1,31 @@
-# pi-push
+# pi-agent-push
 
-pi 主 agent 停下来的时候，把消息推到你手机 / 群里。
-
-支持：Bark、飞书、企业微信、钉钉、**ntfy**、通用 Webhook。全部发**纯文本**。
+pi 主 agent 停下来时，把消息推到手机 / 群：Bark、飞书、企业微信、钉钉、ntfy、通用 Webhook。全部**纯文本**。
 
 ## 安装
 
 ```bash
 pi install npm:pi-agent-push
-# 或
+# 或从 GitHub：
 pi install git:github.com/kiim-wong/pi-push
 ```
 
-然后复制示例配置（若包未自动带出可写路径）：
+安装后重启 pi 或执行 `/reload`。
 
-```bash
-# 全局扩展目录下编辑配置，或用命令配置：
-# /push set ntfy topic=your-topic enabled=true
-# /push test ntfy
-```
+## 配置
 
-配置文件默认：`~/.pi/agent/extensions/` 由 pi 包管理器安装后的扩展数据目录；也可用环境变量 `PI_PUSH_CONFIG` 指向自定义 `config.json`。仓库内的 `config.example.json` 是模板，**不要**提交真实 key。
+任选其一：
+
+1. **命令行（推荐）**
+   ```text
+   /push set ntfy topic=your-topic enabled=true
+   /push test ntfy
+   ```
+2. **配置文件**  
+   在扩展目录创建 `config.json`（可参考包内 `config.example.json`）。  
+   也可用环境变量 `PI_AGENT_PUSH_CONFIG` 指向自定义路径。
+
+> 仓库 / npm 包**不包含**真实 key；本地 `config.json` 请自行保管。
 
 ---
 ## 快速开始
@@ -178,7 +183,7 @@ pi 的 subagent 是用 `pi --mode json -p` 拉子进程跑的，全局扩展在�
 ## 自测
 
 ```bash
-cd ~/.pi/agent/extensions/pi-push && node test/run.ts   # 需要 Node >= 23
+cd ~/.pi/agent/extensions/pi-agent-push && node test/run.ts   # 需要 Node >= 23
 ```
 
 会起一个本地 HTTP 服务假扮各渠道，跑自测断言：签名算法（对拍官方算法的固定

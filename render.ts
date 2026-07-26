@@ -1,5 +1,5 @@
 /**
- * pi-push — `{{placeholder}}` substitution.
+ * pi-agent-push — `{{placeholder}}` substitution.
  *
  * Escaping matters: a raw string template that lands inside JSON must have its
  * values JSON-escaped, otherwise a quote or newline in an error message

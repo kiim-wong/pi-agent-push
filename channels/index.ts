@@ -1,5 +1,5 @@
 /**
- * pi-push — channel registry.
+ * pi-agent-push — channel registry.
  *
  * Adding a channel means adding one file and one line here.
  */

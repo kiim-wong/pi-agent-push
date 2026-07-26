@@ -1,5 +1,5 @@
 /**
- * pi-push — payload building and dispatch.
+ * pi-agent-push — payload building and dispatch.
  *
  * Rules that matter:
  *  - one attempt per channel, no built-in retry (retry policy stays visible to

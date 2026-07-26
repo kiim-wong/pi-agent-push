@@ -1,5 +1,5 @@
 /**
- * pi-push — generic webhook channel.
+ * pi-agent-push — generic webhook channel.
  *
  * `body` as an object is the recommended form: placeholders are substituted
  * into the parsed structure and the result is serialised afterwards, so a

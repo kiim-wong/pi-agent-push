@@ -1,5 +1,5 @@
 /**
- * pi-push — Bark (iOS) channel.
+ * pi-agent-push — Bark (iOS) channel.
  *
  * Uses the `POST /:device_key` route with a JSON body, which bark-server
  * supports in both V1 and V2 (V2 registers it as a compatibility route), so

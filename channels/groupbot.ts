@@ -1,5 +1,5 @@
 /**
- * pi-push — 飞书 / 企业微信 / 钉钉 group bots.
+ * pi-agent-push — 飞书 / 企业微信 / 钉钉 group bots.
  *
  * All three send plain text (`msg_type`/`msgtype` = "text"). The two signing
  * schemes differ and are easy to mix up:

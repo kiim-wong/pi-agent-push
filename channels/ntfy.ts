@@ -1,5 +1,5 @@
 /**
- * pi-push — ntfy channel (https://ntfy.sh / self-hosted).
+ * pi-agent-push — ntfy channel (https://ntfy.sh / self-hosted).
  *
  * Body is plain text only (`message` / payload.text). No JSON envelope.
  * Optional priority / tags / click / icon go as HTTP headers so they do not
