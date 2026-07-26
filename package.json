@@ -1,0 +1,61 @@
+{
+  "name": "pi-push",
+  "version": "1.0.0",
+  "description": "Pi extension: push agent idle / interrupted / need-input events to Bark, Feishu, WeCom, DingTalk, ntfy, or a generic webhook.",
+  "type": "module",
+  "license": "MIT",
+  "author": "kiim-wong",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kiim-wong/pi-push.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiim-wong/pi-push/issues"
+  },
+  "homepage": "https://github.com/kiim-wong/pi-push#readme",
+  "keywords": [
+    "pi",
+    "pi-coding-agent",
+    "pi-package",
+    "pi-extension",
+    "notify",
+    "ntfy",
+    "bark",
+    "webhook",
+    "feishu",
+    "wecom",
+    "dingtalk"
+  ],
+  "files": [
+    "channels",
+    "index.ts",
+    "command.ts",
+    "config.ts",
+    "http.ts",
+    "notifier.ts",
+    "render.ts",
+    "types.ts",
+    "config.example.json",
+    "README.md",
+    "LICENSE",
+    "DESIGN.md"
+  ],
+  "scripts": {
+    "test": "node test/run.ts",
+    "prepublishOnly": "node test/run.ts"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "pi": {
+    "extensions": [
+      "./index.ts"
+    ]
+  }
+}

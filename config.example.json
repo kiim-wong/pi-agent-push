@@ -1,0 +1,85 @@
+{
+	"_1_说明": "复制为 config.json 后按需删改。所有 _ 开头的键都会被忽略，可当注释用。也可用 /push set 在 pi 内配置。",
+	"_2_占位符": "{{status}} {{reason}} {{text}} {{title}} {{event}} {{cwd}} {{project}} {{duration}} {{session}} {{model}} {{host}} {{time}} {{date}}",
+	"_3_环境变量": "值写成 \"$VAR\" 整体取环境变量；写成 \"Bearer ${VAR}\" 可嵌入替换。key 不必落盘。",
+
+	"enabled": true,
+	"modes": ["tui"],
+	"timeoutMs": 5000,
+	"shutdownTimeoutMs": 2000,
+	"dedupeMs": 3000,
+	"minDurationSec": 0,
+	"maxTextChars": 500,
+	"debug": false,
+
+	"titleTemplate": "pi {{status}}",
+	"template": "pi {{status}} · {{reason}}",
+
+	"events": {
+		"idle": true,
+		"interrupted": true,
+		"needInput": true,
+		"exit": false
+	},
+	"needInputTools": ["ask_user_question"],
+
+	"channels": [
+		{
+			"_": "Bark：deviceKey 就是 App 里那串 key；自建服务改 server。",
+			"type": "bark",
+			"name": "我的 iPhone",
+			"enabled": false,
+			"deviceKey": "$BARK_KEY",
+			"server": "https://api.day.app",
+			"sound": "bell",
+			"group": "pi",
+			"level": "active"
+		},
+		{
+			"_": "飞书群机器人：开启「签名校验」才需要 secret。",
+			"type": "feishu",
+			"enabled": false,
+			"url": "https://open.feishu.cn/open-apis/bot/v2/hook/xxxxxxxx",
+			"secret": ""
+		},
+		{
+			"_": "企业微信群机器人：key 在 webhook 地址里，无需签名。",
+			"type": "wecom",
+			"enabled": false,
+			"url": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxxxxxx"
+		},
+		{
+			"_": "钉钉群机器人：加签模式填 secret；若用关键词模式，请把关键词写进 template。",
+			"type": "dingtalk",
+			"enabled": false,
+			"url": "https://oapi.dingtalk.com/robot/send?access_token=xxxxxxxx",
+			"secret": "SECxxxxxxxx"
+		},
+		{
+			"_": "ntfy：topic 相当于密码；自建改 server；需要鉴权时填 token。正文只发纯文本 message。",
+			"type": "ntfy",
+			"name": "手机 ntfy",
+			"enabled": false,
+			"topic": "$NTFY_TOPIC",
+			"server": "https://ntfy.sh",
+			"token": "$NTFY_TOKEN",
+			"priority": "default",
+			"tags": "pi,computer"
+		},
+		{
+			"_": "通用 webhook：body 用对象写，占位符替换后再序列化，不必手动转义。",
+			"type": "webhook",
+			"name": "my-hook",
+			"enabled": false,
+			"url": "https://example.com/push",
+			"method": "POST",
+			"headers": { "Authorization": "Bearer ${MY_TOKEN}" },
+			"body": {
+				"channel": "#pi",
+				"text": "{{text}}",
+				"meta": { "event": "{{event}}", "project": "{{project}}", "duration": "{{duration}}" }
+			},
+			"events": { "idle": false, "interrupted": true, "needInput": false }
+		}
+	]
+}

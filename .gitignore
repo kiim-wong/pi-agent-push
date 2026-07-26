@@ -1,0 +1,12 @@
+node_modules/
+*.tgz
+.npm/
+.env
+.env.*
+!.env.example
+config.json
+push.log
+push.log.*
+.DS_Store
+npm-debug.log*
+.npmrc
