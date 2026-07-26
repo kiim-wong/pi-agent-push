@@ -7,7 +7,7 @@ pi 主 agent 停下来时，把消息推到手机 / 群：Bark、飞书、企业
 ```bash
 pi install npm:pi-agent-push
 # 或从 GitHub：
-pi install git:github.com/kiim-wong/pi-push
+pi install git:github.com/kiim-wong/pi-agent-push
 ```
 
 安装后重启 pi 或执行 `/reload`。

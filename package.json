@@ -1,18 +1,18 @@
 {
   "name": "pi-agent-push",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Pi extension: push agent idle / interrupted / need-input events to Bark, Feishu, WeCom, DingTalk, ntfy, or a generic webhook.",
   "type": "module",
   "license": "MIT",
   "author": "kiim-wong",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kiim-wong/pi-push.git"
+    "url": "git+https://github.com/kiim-wong/pi-agent-push.git"
   },
   "bugs": {
-    "url": "https://github.com/kiim-wong/pi-push/issues"
+    "url": "https://github.com/kiim-wong/pi-agent-push/issues"
   },
-  "homepage": "https://github.com/kiim-wong/pi-push#readme",
+  "homepage": "https://github.com/kiim-wong/pi-agent-push#readme",
   "keywords": [
     "pi",
     "pi-coding-agent",
