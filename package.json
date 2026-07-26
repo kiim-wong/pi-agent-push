@@ -1,5 +1,5 @@
 {
-  "name": "@yp_wong/pi-push",
+  "name": "pi-agent-push",
   "version": "1.0.0",
   "description": "Pi extension: push agent idle / interrupted / need-input events to Bark, Feishu, WeCom, DingTalk, ntfy, or a generic webhook.",
   "type": "module",

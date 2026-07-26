@@ -7,7 +7,7 @@ pi 主 agent 停下来的时候，把消息推到你手机 / 群里。
 ## 安装
 
 ```bash
-pi install npm:@yp_wong/pi-push
+pi install npm:pi-agent-push
 # 或
 pi install git:github.com/kiim-wong/pi-push
 ```
