@@ -1,5 +1,184 @@
 # pi-agent-push
 
+Push a message to your phone or group chat when the pi main agent settles: Bark, Feishu, WeCom, DingTalk, ntfy, or a generic Webhook. All payloads are **plain text**.
+
+## Install
+
+```bash
+pi install npm:pi-agent-push
+# or from GitHub:
+pi install git:github.com/kiim-wong/pi-agent-push
+```
+
+Restart pi or run `/reload` after install.
+
+## Config
+
+Pick one:
+
+1. **CLI (recommended)**
+   ```text
+   /push set ntfy topic=your-topic enabled=true
+   /push test ntfy
+   ```
+2. **Config file**  
+   Create `config.json` in the extension directory (see package `config.example.json`).  
+   Or point env `PI_AGENT_PUSH_CONFIG` at a custom path.
+
+> The repo / npm package does **not** ship real keys; keep your local `config.json` private.
+
+---
+
+## Quick start
+
+1. Open `config.json`, fill in keys for the channels you want, set that channel's `"enabled"` to `true`
+2. Restart pi, or run `/reload` in the session
+3. `/push test` — prints HTTP results per channel
+
+```
+/push                         status
+/push list                    list channels
+/push get <channel>           view config (secrets redacted)
+/push enable|disable <channel> toggle channel (writes config.json)
+/push set <channel> k=v [k=v…] set topic/token/deviceKey/url…
+/push test [channel]          test (optionally one channel)
+/push events [k=on|off…]      global event toggles
+/push on|off                  session master switch (not persisted)
+/push help
+```
+
+Channel selector: `ntfy` / name / `ntfy#1` / index.
+
+```
+/push set ntfy topic=my-topic token=tk_xxx enabled=true
+/push enable ntfy
+/push test ntfy
+```
+
+## When it pushes
+
+| Event | Trigger | Default | Message |
+|---|---|---|---|
+| `idle` | Model finished, auto-retry and auto-compaction done, pi is truly waiting for you | on | `pi ready · output finished, waiting for input` |
+| `interrupted` | Turn cancelled with Esc | on | `pi interrupted · turn cancelled` |
+| `interrupted` | Turn errored (after retries exhausted) | on | `pi interrupted · runtime error: 401 authentication_error: invalid x-api-key` |
+| `needInput` | A question tool like `ask_user_question` was called | on | `pi needs input · pi is waiting for your answer` |
+| `exit` | Session exit (Ctrl+C / Ctrl+D / `/quit`) | **off** | `pi exited · session ended` |
+
+Both `idle` and `interrupted` are decided inside pi's `agent_settled` event, so **auto-retries do not spam** — one user-visible "pi settled" maps to one message.
+
+## Channel config
+
+`config.json` `channels` is an array; you can configure many (including multiple of the same type). Every channel supports `name` (log display name), `enabled`, `timeoutMs`, and `events` (overrides global toggles).
+
+### Bark (iOS)
+
+```json
+{ "type": "bark", "enabled": true, "deviceKey": "$BARK_KEY",
+  "server": "https://api.day.app", "sound": "bell", "group": "pi", "level": "active" }
+```
+
+`deviceKey` is the key shown in the app. For a self-hosted bark-server, change `server` (uses `POST /:device_key`, compatible with V1/V2 servers).
+
+### Feishu group bot
+
+```json
+{ "type": "feishu", "enabled": true,
+  "url": "https://open.feishu.cn/open-apis/bot/v2/hook/xxxx", "secret": "" }
+```
+
+`secret` is only needed when signature verification is enabled. With custom keywords, put the keyword in `template`.
+
+### WeCom group bot
+
+```json
+{ "type": "wecom", "enabled": true,
+  "url": "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=xxxx" }
+```
+
+### DingTalk group bot
+
+```json
+{ "type": "dingtalk", "enabled": true,
+  "url": "https://oapi.dingtalk.com/robot/send?access_token=xxxx", "secret": "SECxxxx" }
+```
+
+For sign mode, set `secret`; for keyword mode, put the keyword in `template`, otherwise DingTalk returns `errcode=310000` (the plugin logs this as a failure).
+
+### ntfy
+
+```json
+{ "type": "ntfy", "enabled": true, "topic": "$NTFY_TOPIC",
+  "server": "https://ntfy.sh", "token": "$NTFY_TOKEN",
+  "priority": "default", "tags": "pi,computer" }
+```
+
+On the public server, `topic` is effectively a password — use a hard-to-guess name. For self-hosted ntfy, change `server`. Set `token` when you need an access token (adds `Authorization: Bearer` automatically). `priority` accepts `1`-`5` or `min|low|default|high|max`.
+
+### Generic Webhook
+
+```json
+{ "type": "webhook", "name": "my-hook", "enabled": true,
+  "url": "https://example.com/push",
+  "method": "POST",
+  "headers": { "Authorization": "Bearer ${MY_TOKEN}" },
+  "body": { "text": "{{text}}", "meta": { "event": "{{event}}", "project": "{{project}}" } },
+  "events": { "idle": false, "interrupted": true } }
+```
+
+**Prefer writing `body` as a JSON object**: placeholders are substituted into the structure, then the whole thing is serialized, so quotes and newlines in error text never break JSON. String templates are also supported and auto-escaped by `contentType`. Placeholders in `url` are URL-encoded.
+
+## All options
+
+| Key | Default | Description |
+|---|---|---|
+| `enabled` | `true` | Master switch |
+| `modes` | `["tui"]` | pi run modes allowed to push; see below |
+| `timeoutMs` | `5000` | Per-request timeout |
+| `shutdownTimeoutMs` | `2000` | Max block time to send on exit |
+| `dedupeMs` | `3000` | Same content only sent once within this window |
+| `minDurationSec` | `0` | Skip `idle` when turn is shorter than this (interrupts still fire) |
+| `maxTextChars` | `500` | Body truncation length |
+| `titleTemplate` | `pi {{status}}` | Title template (Bark) |
+| `template` | `pi {{status}} · {{reason}}` | Body template |
+| `events` | see table above | Global event toggles |
+| `needInputTools` | `["ask_user_question"]` | Which tools count as "asking you" |
+| `debug` | `false` | Log successes too |
+
+Placeholders: `{{status}} {{reason}} {{text}} {{title}} {{event}} {{cwd}} {{project}} {{duration}} {{session}} {{model}} {{host}} {{time}} {{date}}`
+
+Values written as `"$VAR"` are replaced entirely from the environment; `"Bearer ${VAR}"` does in-string substitution — keys need not live on disk.
+
+The config file is hot-read by mtime; edits do **not** need `/reload` (only plugin code changes do).
+
+### Why `modes` defaults to only `tui`
+
+pi subagents run as `pi --mode json -p` child processes, and global extensions load there too. If you allow `json`/`print`, every finished subagent would push — pure noise. Add `print` only when you really want batch-job notifications.
+
+## Troubleshooting
+
+- `/push test` shows each channel's HTTP status or error reason directly
+- Failures are written to `push.log` (same directory as `config.json`); with `"debug": true`, successes are logged too
+- Group bots that return HTTP 200 but business failure (bad signature, missing keyword, rate limit) are treated as **failures** and logged with the error code — never pretended as success
+
+## Known limits
+
+- **SIGKILL / power loss / hard-killed terminal** get no notification: pi does not fire `session_shutdown`, so nothing in-process can send
+- **pi itself crashing** (uncaughtException) also gets none: pi's crash handler registers first and calls `process.exit(1)` synchronously, so async requests cannot leave
+- Only **tool-shaped** questions (`needInputTools`) are detected; confirm dialogs from other extensions are not
+
+## Self-test
+
+```bash
+cd ~/.pi/agent/extensions/pi-agent-push && node test/run.ts   # needs Node >= 23
+```
+
+Spins up a local HTTP server that pretends to be each channel and runs assertions: signature algorithms (fixed vectors matching official algorithms), per-channel payload shapes, dedupe, timeout, mode isolation, JSON escaping, per-channel event overrides, command behavior, etc.
+
+---
+
+# 中文
+
 pi 主 agent 停下来时，把消息推到手机 / 群：Bark、飞书、企业微信、钉钉、ntfy、通用 Webhook。全部**纯文本**。
 
 ## 安装
@@ -28,6 +207,7 @@ pi install git:github.com/kiim-wong/pi-agent-push
 > 仓库 / npm 包**不包含**真实 key；本地 `config.json` 请自行保管。
 
 ---
+
 ## 快速开始
 
 1. 打开 `config.json`，把要用的渠道填上 key，并把该渠道的 `"enabled"` 改成 `true`
