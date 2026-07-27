@@ -62,7 +62,7 @@ Channel selector: `ntfy` / name / `ntfy#1` / index.
 | `idle` | Model finished, auto-retry and auto-compaction done, pi is truly waiting for you | on | `pi ready · output finished, waiting for input` |
 | `interrupted` | Turn cancelled with Esc | on | `pi interrupted · turn cancelled` |
 | `interrupted` | Turn errored (after retries exhausted) | on | `pi interrupted · runtime error: 401 authentication_error: invalid x-api-key` |
-| `needInput` | A question tool like `ask_user_question` was called | on | `pi needs input · pi is waiting for your answer` |
+| `needInput` | A question tool (`ask_user_question`, `plan_mode_question`) was called | on | `pi needs input · pi is waiting for your answer` |
 | `exit` | Session exit (Ctrl+C / Ctrl+D / `/quit`) | **off** | `pi exited · session ended` |
 
 Both `idle` and `interrupted` are decided inside pi's `agent_settled` event, so **auto-retries do not spam** — one user-visible "pi settled" maps to one message.
@@ -142,7 +142,7 @@ On the public server, `topic` is effectively a password — use a hard-to-guess 
 | `titleTemplate` | `pi {{status}}` | Title template (Bark) |
 | `template` | `pi {{status}} · {{reason}}` | Body template |
 | `events` | see table above | Global event toggles |
-| `needInputTools` | `["ask_user_question"]` | Which tools count as "asking you" |
+| `needInputTools` | `["ask_user_question", "plan_mode_question"]` | Which tools count as "asking you" |
 | `debug` | `false` | Log successes too |
 
 Placeholders: `{{status}} {{reason}} {{text}} {{title}} {{event}} {{cwd}} {{project}} {{duration}} {{session}} {{model}} {{host}} {{time}} {{date}}`
@@ -241,7 +241,7 @@ pi install git:github.com/kiim-wong/pi-agent-push
 | `idle` | 模型回答完、自动重试和自动压缩都结束，pi 真正在等你 | 开 | `pi 已就绪 · 输出结束，等待输入` |
 | `interrupted` | 本轮被 Esc 取消 | 开 | `pi 已中断 · 本轮被取消` |
 | `interrupted` | 本轮报错（重试用尽后） | 开 | `pi 已中断 · 运行出错：401 authentication_error: invalid x-api-key` |
-| `needInput` | 调用了 `ask_user_question` 之类的提问工具 | 开 | `pi 需要确认 · pi 正在等你回答问题` |
+| `needInput` | 调用了提问工具（`ask_user_question`、`plan_mode_question`） | 开 | `pi 需要确认 · pi 正在等你回答问题` |
 | `exit` | 会话退出（Ctrl+C / Ctrl+D / `/quit`） | **关** | `pi 已退出 · 会话结束` |
 
 `idle` 和 `interrupted` 都在 pi 的 `agent_settled` 事件里判定，所以**自动重试不会重复推送**——一次用户可感知的"pi 停下来了"只对应一条消息。
@@ -329,7 +329,7 @@ pi install git:github.com/kiim-wong/pi-agent-push
 | `titleTemplate` | `pi {{status}}` | 标题模板（Bark 用） |
 | `template` | `pi {{status}} · {{reason}}` | 正文模板 |
 | `events` | 见上表 | 全局事件开关 |
-| `needInputTools` | `["ask_user_question"]` | 哪些工具算"在问你" |
+| `needInputTools` | `["ask_user_question", "plan_mode_question"]` | 哪些工具算"在问你" |
 | `debug` | `false` | 成功也记日志 |
 
 占位符：`{{status}} {{reason}} {{text}} {{title}} {{event}} {{cwd}} {{project}}

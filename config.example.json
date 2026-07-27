@@ -21,7 +21,7 @@
 		"needInput": true,
 		"exit": false
 	},
-	"needInputTools": ["ask_user_question"],
+	"needInputTools": ["ask_user_question", "plan_mode_question"],
 
 	"channels": [
 		{

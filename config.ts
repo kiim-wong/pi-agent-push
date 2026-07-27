@@ -92,7 +92,11 @@ export function defaultConfig(path: string): NotifyConfig {
 		titleTemplate: "pi {{status}}",
 		template: "pi {{status}} · {{reason}}",
 		events: { idle: true, interrupted: true, needInput: true, exit: false },
-		needInputTools: ["ask_user_question"],
+		// Question-shaped tools block inside their own execute() waiting on the UI,
+		// so agent_settled never fires while they wait — they need their own event.
+		// ask_user_question: @juicesharp/rpiv-ask-user-question
+		// plan_mode_question: @narumitw/pi-plan-mode
+		needInputTools: ["ask_user_question", "plan_mode_question"],
 		debug: false,
 		channels: [],
 		warnings: [],

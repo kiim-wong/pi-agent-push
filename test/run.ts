@@ -361,10 +361,11 @@ check("错误摘要: 空值安全", summarizeError(undefined, 40) === "");
 	check("去重: 窗口内重复只发一次", captured.length === 1, `实际 ${captured.length}`);
 }
 
-// 5. needInput 只对配置的工具触发
+// 5. needInput 只对配置的工具触发（默认白名单覆盖两个提问工具）
 {
 	reset();
-	writeConfig({ channels: [{ type: "webhook", url: `${base}/hook` }] });
+	// dedupeMs: 0 —— 两次 needInput 正文相同，默认 3s 去重窗口会吃掉第二条
+	writeConfig({ dedupeMs: 0, channels: [{ type: "webhook", url: `${base}/hook` }] });
 	const h = boot();
 	await h.emit({ type: "tool_call", toolName: "bash", input: {} });
 	await new Promise((resolve) => setTimeout(resolve, 150));
@@ -372,6 +373,14 @@ check("错误摘要: 空值安全", summarizeError(undefined, 40) === "");
 	await h.emit({ type: "tool_call", toolName: "ask_user_question", input: {} });
 	await waitFor(() => captured.length >= 1);
 	check("needInput: ask_user_question 推送", captured[0]?.json?.event === "needInput", captured[0]?.raw);
+	// plan mode 的提问工具同样阻塞在 execute() 内等人，agent_settled 不会兜底
+	await h.emit({ type: "tool_call", toolName: "plan_mode_question", input: {} });
+	await waitFor(() => captured.length >= 2);
+	check(
+		"needInput: plan_mode_question 推送",
+		captured[1]?.json?.event === "needInput",
+		captured[1]?.raw ?? `实际 ${captured.length}`,
+	);
 }
 
 // 6. 模式隔离（subagent 用 --mode json，不应打扰）
